@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Futebol Camisas - Loja Oficial</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="navbar container">
+            <a href="/" class="logo">Futebol Camisas</a>
+            <div class="search-bar">
+                <input type="text" placeholder="O que você está procurando?">
+                <button><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+            <div class="nav-icons">
+                <a th:if="${session.usuario != null}" th:href="@{/logout}">
+                    <i class="fa-solid fa-user"></i> <span th:text="${session.usuario.nome}">Usuário</span> (Sair)
+                </a>
+                <a th:if="${session.usuario == null}" th:href="@{/login}">
+                    <i class="fa-solid fa-user"></i> Minha Conta
+                </a>
+                <a href="#"><i class="fa-solid fa-cart-shopping"></i> Carrinho</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container main-content">
+        <aside class="sidebar">
+            <h3>Filtros</h3>
+            <form method="get" action="/" id="filterForm">
+                <input type="hidden" name="sort" th:value="${sortSelecionado}" id="sortHidden">
+                <div class="filter-group">
+                    <h4>Times</h4>
+                    <ul>
+                        <li>
+                            <input type="radio" id="time1" name="time" value="Corinthians" 
+                                   th:checked="${timeSelecionado == 'Corinthians'}">
+                            <label for="time1">Corinthians</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="time2" name="time" value="Flamengo"
+                                   th:checked="${timeSelecionado == 'Flamengo'}">
+                            <label for="time2">Flamengo</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="time3" name="time" value="Palmeiras"
+                                   th:checked="${timeSelecionado == 'Palmeiras'}">
+                            <label for="time3">Palmeiras</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="time4" name="time" value="São Paulo"
+                                   th:checked="${timeSelecionado == 'São Paulo'}">
+                            <label for="time4">São Paulo</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="time0" name="time" value="" 
+                                   th:checked="${timeSelecionado == null || timeSelecionado == ''}">
+                            <label for="time0">Todos</label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="filter-group">
+                    <h4>Marcas</h4>
+                    <ul>
+                        <li>
+                            <input type="radio" id="marca1" name="marca" value="Nike"
+                                   th:checked="${marcaSelecionada == 'Nike'}">
+                            <label for="marca1">Nike</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="marca2" name="marca" value="Adidas"
+                                   th:checked="${marcaSelecionada == 'Adidas'}">
+                            <label for="marca2">Adidas</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="marca3" name="marca" value="Puma"
+                                   th:checked="${marcaSelecionada == 'Puma'}">
+                            <label for="marca3">Puma</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="marca0" name="marca" value=""
+                                   th:checked="${marcaSelecionada == null || marcaSelecionada == ''}">
+                            <label for="marca0">Todas</label>
+                        </li>
+                    </ul>
+                </div>
+                <button type="submit" class="btn-filter">Aplicar Filtros</button>
+                <a href="/" class="btn-filter-clear">Limpar Filtros</a>
+            </form>
+        </aside>
+
+        <div class="products-container">
+            <div class="header-produtos">
+                <h2>Nossos Produtos</h2>
+                <div class="sort-options">
+                    <label for="sort">Ordenar por:</label>
+                    <select name="sort" id="sort" onchange="window.location.href=updateUrlParam('sort', this.value)">
+                        <option value="relevancia" th:selected="${param.sort == null || param.sort[0] == 'relevancia'}">Relevância</option>
+                        <option value="preco-menor" th:selected="${param.sort != null && param.sort[0] == 'preco-menor'}">Menor Preço</option>
+                        <option value="preco-maior" th:selected="${param.sort != null && param.sort[0] == 'preco-maior'}">Maior Preço</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="product-grid" th:if="${produtos != null && !produtos.isEmpty()}">
+                <div class="product-card" th:each="produto : ${produtos}">
+                    <img th:src="${produto.urlImagem}" alt="Imagem da camisa">
+                    <h3 th:text="${produto.nome}">Nome da Camisa</h3>
+                    <p class="price" th:text="${'R$ ' + #numbers.formatDecimal(produto.preco, 1, 'POINT', 2, 'COMMA')}">R$ 299,99</p>
+                    <a th:href="@{/produto/{id}(id=${produto.id})}" class="btn">Ver Detalhes</a>
+                </div>
+            </div>
+            <div th:if="${produtos == null || produtos.isEmpty()}">
+                <p>Nenhum produto encontrado.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-content">
+            <div class="footer-section">
+                <h4>Sobre Nós</h4>
+                <p>A maior loja de camisas de time do Brasil.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Links Rápidos</h4>
+                <ul>
+                    <li><a href="#">Política de Privacidade</a></li>
+                    <li><a href="#">Termos de Uso</a></li>
+                    <li><a href="#">Contato</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Siga-nos</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 Futebol Camisas. Todos os direitos reservados.
+        </div>
+    </footer>
+
+    <script>
+        function updateUrlParam(key, value) {
+            const url = new URL(window.location.href);
+            const sortHidden = document.getElementById('sortHidden');
+            if (sortHidden) {
+                sortHidden.value = value;
+            }
+            if (value === 'relevancia' || value === '') {
+                url.searchParams.delete(key);
+            } else {
+                url.searchParams.set(key, value);
+            }
+            document.getElementById('filterForm').submit();
+        }
+    </script>
+
+</body>
+</html>
+

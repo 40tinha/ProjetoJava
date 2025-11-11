@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${produto.nome}">Detalhes do Produto</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="navbar container">
+            <a href="/" class="logo">Futebol Camisas</a>
+            <div class="search-bar">
+                <input type="text" placeholder="O que você está procurando?">
+                <button><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+            <div class="nav-icons">
+                <a th:if="${session.usuario != null}" th:href="@{/logout}">
+                    <i class="fa-solid fa-user"></i> <span th:text="${session.usuario.nome}">Usuário</span> (Sair)
+                </a>
+                <a th:if="${session.usuario == null}" th:href="@{/login}">
+                    <i class="fa-solid fa-user"></i> Minha Conta
+                </a>
+                <a href="#"><i class="fa-solid fa-cart-shopping"></i> Carrinho</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container product-detail">
+        <a href="/" class="back-link">&larr; Voltar para a loja</a>
+        <div class="product-content" th:if="${produto != null}">
+            <div class="product-gallery">
+                <img th:src="${produto.urlImagem}" th:alt="${produto.nome}" class="product-image-large">
+            </div>
+            <div class="product-info">
+                <h2 th:text="${produto.nome}">Nome da Camisa</h2>
+                <p class="short-desc" th:text="${produto.descricao}">Descrição detalhada do produto.</p>
+                <p class="price-large" th:text="${'R$ ' + #numbers.formatDecimal(produto.preco, 1, 'POINT', 2, 'COMMA')}">R$ 299,99</p>
+                
+                <div class="size-selector">
+                    <h4>Tamanho:</h4>
+                    <button class="size-btn">P</button>
+                    <button class="size-btn active">M</button>
+                    <button class="size-btn">G</button>
+                    <button class="size-btn">GG</button>
+                </div>
+
+                <div class="quantity-selector">
+                    <h4>Quantidade:</h4>
+                    <input type="number" value="1" min="1">
+                </div>
+
+                <button class="btn-buy"><i class="fa-solid fa-cart-plus"></i> Adicionar ao Carrinho</button>
+                
+                <div class="product-specs">
+                    <h4>Especificações</h4>
+                    <table>
+                        <tr>
+                            <td>Time</td>
+                            <td th:text="${produto.time}">Corinthians</td>
+                        </tr>
+                        <tr>
+                            <td>Marca</td>
+                            <td th:text="${produto.marca}">Nike</td>
+                        </tr>
+                        <tr>
+                            <td>Temporada</td>
+                            <td th:text="${produto.temporada}">2024/25</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div th:if="${produto == null}">
+            <p>Produto não encontrado.</p>
+            <a href="/">Voltar para a loja</a>
+        </div>
+
+        <div class="reviews-section">
+            <h3>Avaliações de Clientes</h3>
+            <div class="review">
+                <div class="review-header">
+                    <strong>João Silva</strong>
+                    <span class="stars">★★★★☆</span>
+                </div>
+                <p class="review-body">Camisa de ótima qualidade, entrega rápida!</p>
+            </div>
+            <div class="review">
+                <div class="review-header">
+                    <strong>Maria Oliveira</strong>
+                    <span class="stars">★★★★★</span>
+                </div>
+                <p class="review-body">Produto perfeito, original e muito bonito.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-content">
+            <div class="footer-section">
+                <h4>Sobre Nós</h4>
+                <p>A maior loja de camisas de time do Brasil.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Links Rápidos</h4>
+                <ul>
+                    <li><a href="#">Política de Privacidade</a></li>
+                    <li><a href="#">Termos de Uso</a></li>
+                    <li><a href="#">Contato</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Siga-nos</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 Futebol Camisas. Todos os direitos reservados.
+        </div>
+    </footer>
+
+</body>
+</html>
+
