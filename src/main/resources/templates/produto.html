@@ -2,128 +2,331 @@
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${produto.nome}">Detalhes do Produto</title>
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+        }
+        .cart-badge {
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+            position: relative;
+            top: -8px;
+            margin-left: 5px;
+        }
+        .container-custom {
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        .product-detail-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        .product-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+        }
+        .product-info {
+            padding: 40px;
+        }
+        .product-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .product-price {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .product-description {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .spec-table {
+            margin-bottom: 30px;
+        }
+        .spec-table th {
+            font-weight: 600;
+            padding: 10px;
+            background: #f8f9fa;
+        }
+        .spec-table td {
+            padding: 10px;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .quantity-input {
+            width: 80px;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .btn-custom {
+            border-radius: 25px;
+            padding: 15px 40px;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn-success-custom {
+            background: #28a745;
+            color: white;
+        }
+        .btn-success-custom:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-link:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+        .reviews-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+        .review {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px 0;
+        }
+        .review:last-child {
+            border-bottom: none;
+        }
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .stars {
+            color: #ffc107;
+        }
+        .footer {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+    </style>
 </head>
 <body>
-
-    <header class="main-header">
-        <nav class="navbar container">
-            <a href="/" class="logo">Futebol Camisas</a>
-            <div class="search-bar">
-                <input type="text" placeholder="O que você está procurando?">
-                <button><i class="fa-solid fa-magnifying-glass"></i></button>
-            </div>
-            <div class="nav-icons">
-                <a th:if="${session.usuario != null}" th:href="@{/logout}">
-                    <i class="fa-solid fa-user"></i> <span th:text="${session.usuario.nome}">Usuário</span> (Sair)
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <a class="logo" href="/">
+                    <i class="fas fa-shirt"></i> Futebol Camisas
                 </a>
-                <a th:if="${session.usuario == null}" th:href="@{/login}">
-                    <i class="fa-solid fa-user"></i> Minha Conta
-                </a>
-                <a href="#"><i class="fa-solid fa-cart-shopping"></i> Carrinho</a>
-            </div>
-        </nav>
-    </header>
-
-    <main class="container product-detail">
-        <a href="/" class="back-link">&larr; Voltar para a loja</a>
-        <div class="product-content" th:if="${produto != null}">
-            <div class="product-gallery">
-                <img th:src="${produto.urlImagem}" th:alt="${produto.nome}" class="product-image-large">
-            </div>
-            <div class="product-info">
-                <h2 th:text="${produto.nome}">Nome da Camisa</h2>
-                <p class="short-desc" th:text="${produto.descricao}">Descrição detalhada do produto.</p>
-                <p class="price-large" th:text="${'R$ ' + #numbers.formatDecimal(produto.preco, 1, 'POINT', 2, 'COMMA')}">R$ 299,99</p>
-                
-                <div class="size-selector">
-                    <h4>Tamanho:</h4>
-                    <button class="size-btn">P</button>
-                    <button class="size-btn active">M</button>
-                    <button class="size-btn">G</button>
-                    <button class="size-btn">GG</button>
-                </div>
-
-                <div class="quantity-selector">
-                    <h4>Quantidade:</h4>
-                    <input type="number" value="1" min="1">
-                </div>
-
-                <button class="btn-buy"><i class="fa-solid fa-cart-plus"></i> Adicionar ao Carrinho</button>
-                
-                <div class="product-specs">
-                    <h4>Especificações</h4>
-                    <table>
-                        <tr>
-                            <td>Time</td>
-                            <td th:text="${produto.time}">Corinthians</td>
-                        </tr>
-                        <tr>
-                            <td>Marca</td>
-                            <td th:text="${produto.marca}">Nike</td>
-                        </tr>
-                        <tr>
-                            <td>Temporada</td>
-                            <td th:text="${produto.temporada}">2024/25</td>
-                        </tr>
-                    </table>
+                <div class="d-flex align-items-center gap-3">
+                    <span th:if="${session.usuarioLogado}" class="text-muted">
+                        Olá, <strong th:text="${session.usuarioLogado.nome}"></strong>
+                    </span>
+                    <a th:if="${session.usuarioLogado}" href="/logout" class="btn btn-outline-danger btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </a>
+                    <a th:unless="${session.usuarioLogado}" href="/login" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-sign-in-alt"></i> Entrar
+                    </a>
+                    <a href="/carrinho" class="btn btn-outline-primary btn-sm position-relative">
+                        <i class="fas fa-shopping-cart"></i> Carrinho
+                        <span th:if="${session.carrinho != null && !session.carrinho.isEmpty()}" 
+                              class="cart-badge" 
+                              th:text="${session.carrinho.quantidadeTotal}">0</span>
+                    </a>
                 </div>
             </div>
         </div>
-        <div th:if="${produto == null}">
-            <p>Produto não encontrado.</p>
-            <a href="/">Voltar para a loja</a>
+    </nav>
+
+    <!-- Mensagens -->
+    <div class="container container-custom" th:if="${mensagem}">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> <span th:text="${mensagem}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+
+    <div class="container container-custom">
+        <a href="/" class="back-link">
+            <i class="fas fa-arrow-left"></i> Voltar para a loja
+        </a>
+
+        <div class="product-detail-card" th:if="${produto != null}">
+            <div class="row g-0">
+                <div class="col-md-6">
+                    <img th:src="${produto.urlImagem}" 
+                         th:alt="${produto.nome}" 
+                         class="product-image">
+                </div>
+                <div class="col-md-6">
+                    <div class="product-info">
+                        <h1 class="product-title" th:text="${produto.nome}">Nome da Camisa</h1>
+                        
+                        <p class="product-description" th:text="${produto.descricao}">
+                            Descrição do produto
+                        </p>
+                        
+                        <p class="product-price">
+                            R$ <span th:text="${#numbers.formatDecimal(produto.preco, 1, 2)}"></span>
+                        </p>
+
+                        <!-- Especificações -->
+                        <div class="spec-table">
+                            <h4><i class="fas fa-info-circle"></i> Especificações</h4>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th><i class="fas fa-shield-alt"></i> Time</th>
+                                    <td th:text="${produto.time}">Time</td>
+                                </tr>
+                                <tr>
+                                    <th><i class="fas fa-tag"></i> Marca</th>
+                                    <td th:text="${produto.marca}">Marca</td>
+                                </tr>
+                                <tr>
+                                    <th><i class="fas fa-calendar"></i> Temporada</th>
+                                    <td th:text="${produto.temporada}">Temporada</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Controle de Quantidade -->
+                        <form th:action="@{/carrinho/adicionar/{id}(id=${produto.id})}" method="post">
+                            <div class="quantity-control">
+                                <label for="quantidade"><strong>Quantidade:</strong></label>
+                                <input type="number" 
+                                       id="quantidade" 
+                                       name="quantidade" 
+                                       value="1" 
+                                       min="1" 
+                                       max="10" 
+                                       class="quantity-input">
+                            </div>
+
+                            <!-- Botões de Ação -->
+                            <div class="d-flex gap-3">
+                                <button type="submit" class="btn btn-success-custom btn-custom flex-fill">
+                                    <i class="fas fa-cart-plus"></i> Adicionar ao Carrinho
+                                </button>
+                                <a href="/" class="btn btn-primary-custom btn-custom flex-fill">
+                                    <i class="fas fa-shopping-bag"></i> Continuar Comprando
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <!-- Avaliações -->
         <div class="reviews-section">
-            <h3>Avaliações de Clientes</h3>
+            <h3><i class="fas fa-star"></i> Avaliações de Clientes</h3>
             <div class="review">
                 <div class="review-header">
-                    <strong>João Silva</strong>
+                    <strong><i class="fas fa-user"></i> João Silva</strong>
                     <span class="stars">★★★★☆</span>
                 </div>
-                <p class="review-body">Camisa de ótima qualidade, entrega rápida!</p>
+                <p>Camisa de ótima qualidade, entrega rápida! Muito satisfeito com a compra.</p>
             </div>
             <div class="review">
                 <div class="review-header">
-                    <strong>Maria Oliveira</strong>
+                    <strong><i class="fas fa-user"></i> Maria Oliveira</strong>
                     <span class="stars">★★★★★</span>
                 </div>
-                <p class="review-body">Produto perfeito, original e muito bonito.</p>
+                <p>Produto perfeito, original e muito bonito. Recomendo!</p>
+            </div>
+            <div class="review">
+                <div class="review-header">
+                    <strong><i class="fas fa-user"></i> Pedro Santos</strong>
+                    <span class="stars">★★★★★</span>
+                </div>
+                <p>Excelente loja! Produto chegou antes do prazo e é idêntico à foto.</p>
             </div>
         </div>
-    </main>
+    </div>
 
-    <footer class="main-footer">
-        <div class="container footer-content">
-            <div class="footer-section">
-                <h4>Sobre Nós</h4>
-                <p>A maior loja de camisas de time do Brasil.</p>
-            </div>
-            <div class="footer-section">
-                <h4>Links Rápidos</h4>
-                <ul>
-                    <li><a href="#">Política de Privacidade</a></li>
-                    <li><a href="#">Termos de Uso</a></li>
-                    <li><a href="#">Contato</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Siga-nos</h4>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4><i class="fas fa-info-circle"></i> Sobre Nós</h4>
+                    <p>A maior loja de camisas de time do Brasil.</p>
+                </div>
+                <div class="col-md-4">
+                    <h4><i class="fas fa-link"></i> Links Rápidos</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Política de Privacidade</a></li>
+                        <li><a href="#">Termos de Uso</a></li>
+                        <li><a href="#">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h4><i class="fas fa-share-alt"></i> Siga-nos</h4>
+                    <div class="d-flex gap-3">
+                        <a href="#"><i class="fab fa-facebook-f fa-2x"></i></a>
+                        <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
+                        <a href="#"><i class="fab fa-twitter fa-2x"></i></a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="footer-bottom">
-            &copy; 2025 Futebol Camisas. Todos os direitos reservados.
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2025 Futebol Camisas. Todos os direitos reservados.</p>
+            </div>
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
