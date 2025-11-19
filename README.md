@@ -244,5 +244,84 @@ Desenvolvido como projeto educacional para demonstração do padrão MVC em Java
 
 ---
 
+## CRUD de Anúcios de Tênis (Nova Funcionalidade)
+
+Foi adicionada uma nova funcionalidade para gerenciar anúcios de tênis com acesso restrito para administradores.
+
+### Arquivos Criados:
+
+1. **Modelo (Model):**
+   - `Anuncio.java` - Entidade que representa um anúncio de tênis com validação de dados
+   - Atributos: ID, Título, Descrição, Preço, Marca, Modelo, Tamanho, Cor, URL Imagem, Estoque, Data Criação, Data Atualização
+
+2. **Acesso a Dados (DAO):**
+   - `AnuncioDAO.java` - Gerencia operações CRUD (Create, Read, Update, Delete)
+   - Métodos: salvar(), listarTodos(), obterPorId(), atualizar(), deletar(), existe()
+
+3. **Serviço (Service) - A Ser Criado:**
+   - `AnuncioService.java` - Lógica de negócio para validações adicionais
+
+4. **Controlador (Controller) - A Ser Criado:**
+   - `AnuncioController.java` - Endpoints REST para gerenciar anúcios
+   - Rotas: GET/POST/PUT/DELETE /api/anuncios
+
+5. **Views (HTML/Thymeleaf) - A Ser Criados:**
+   - `admin/anuncios-list.html` - Lista todos os anúcios
+   - `admin/anuncios-form.html` - Formulário para criar/editar
+   - `admin/anuncios-detalhes.html` - Visualiza detalhes do anúncio
+
+### Cómo Usar:
+
+#### 1. Listar todos os anúcios:
+```
+GET /admin/anuncios
+```
+
+#### 2. Criar novo anúncio (Administrador):
+```
+POST /admin/anuncios/novo
+Body: FormData com os dados do anúncio
+```
+
+#### 3. Editar anúncio:
+```
+GET /admin/anuncios/{id}/editar
+POST /admin/anuncios/{id}
+Body: FormData com dados atualizado
+```
+
+#### 4. Deletar anúncio:
+```
+GET /admin/anuncios/{id}/deletar
+```
+
+### Estrutura de Dados do Anuncio:
+```json
+{
+  "id": 1,
+  "titulo": "Nike Air Force 1",
+  "descricao": "Tênis clássico e versátil",
+  "preco": 450.00,
+  "marca": "Nike",
+  "modelo": "Air Force 1",
+  "tamanho": "42",
+  "cor": "Branco",
+  "urlImagem": "https://via.placeholder.com/300",
+  "estoque": 10,
+  "dataCriacao": "2025-11-19T19:00:00",
+  "dataAtualizacao": "2025-11-19T19:00:00"
+}
+```
+
+### Próximas Melhorias Sugeridas:
+
+- [ ] Integração com banco de dados real (MySQL/PostgreSQL)
+- [ ] Imagens com upload para servidor/cloud
+- [ ] Filtros avançados (por marca, tamanho, preço)
+- [ ] Sys...tema de avaliação de anúcios
+- [ ] Historicamente de alterações
+- [ ] Cache para melhor performance
+- [ ] Testes unitários e de integração
+
 **Versão**: 2.0.0  
 **Última Atualização**: Novembro 2025
