@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Anúncios</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f0f0; }
+        header { background-color: #333; color: white; padding: 20px; text-align: center; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table th, table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        table th { background-color: #f2f2f2; }
+        table tr:nth-child(even) { background-color: #f9f9f9; }
+        .action-link { color: #007bff; text-decoration: none; margin: 0 5px; }
+        .action-link:hover { text-decoration: underline; }
+        .btn { display: inline-block; padding: 10px 20px; margin: 10px 0; border-radius: 3px; text-decoration: none; color: white; }
+        .btn-primary { background-color: #4CAF50; }
+        .btn-danger { background-color: #d9534f; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Gerenciador de Anúncios</h1>
+    </header>
+    <div class="container">
+        <h1>Lista de Anúncios de Tênis</h1>
+        <a href="/admin/anuncios/novo" class="btn btn-primary">Novo Anúncio</a>
+        <table th:if="${anuncios.size() > 0}">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Marca</th>
+                    <th>Preço</th>
+                    <th>Estoque</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="anuncio : ${anuncios}">
+                    <td th:text="${anuncio.titulo}"></td>
+                    <td th:text="${anuncio.marca}"></td>
+                    <td th:text="${anuncio.preco}"></td>
+                    <td th:text="${anuncio.estoque}"></td>
+                    <td>
+                        <a th:href="'/admin/anuncios/' + ${anuncio.id} + '/editar'" class="action-link">Editar</a>
+                        <a th:href="'/admin/anuncios/' + ${anuncio.id} + '/deletar'" class="action-link" onclick="return confirm('Deseja deletar este item?')">Deletar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p th:unless="${anuncios.size() > 0}">Nenhum anúncio cadastrado. <a href="/admin/anuncios/novo">Clique aqui</a> para criar um.</p>
+    </div>
+</body>
+</html>
