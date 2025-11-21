@@ -204,26 +204,30 @@
                     <i class="fas fa-shirt"></i> Futebol Camisas
                 </a>
                 <div class="d-flex align-items-center gap-3">
-                    <span th:if="${session.usuarioLogado}" class="text-muted">
-                        Olá, <strong th:text="${session.usuarioLogado.nome}"></strong>
+                    <span th:if="${session.usuario}" class="text-muted">
+                        Olá, <strong th:text="${session.usuario.nome}"></strong>
                     </span>
-                    <a th:if="${session.usuarioLogado}" href="/logout" class="btn btn-outline-danger btn-sm">
+                    <a th:if="${session.usuario}" href="/logout" class="btn btn-outline-danger btn-sm">
                         <i class="fas fa-sign-out-alt"></i> Sair
                     </a>
-                    <a th:unless="${session.usuarioLogado}" href="/login" class="btn btn-outline-primary btn-sm">
+                    <a th:unless="${session.usuario}" href="/login" class="btn btn-outline-primary btn-sm">
                         <i class="fas fa-sign-in-alt"></i> Entrar
                     </a>
                     <a href="/carrinho" class="btn btn-outline-primary btn-sm position-relative">
                         <i class="fas fa-shopping-cart"></i> Carrinho
-                        <span th:if="${session.carrinho != null && !session.carrinho.isEmpty()}" 
-                              class="cart-badge" 
+                        <span th:if="${session.carrinho != null && !session.carrinho.isEmpty()}"
+                              class="cart-badge"
                               th:text="${session.carrinho.quantidadeTotal}">0</span>
+                    </a>
+                    <a th:if="${session.usuario != null and session.usuario.role == 'ADMIN'}"
+                       href="/admin/anuncios"
+                       class="btn btn-outline-warning btn-sm">
+                        <i class="fas fa-tools"></i> Administração
                     </a>
                 </div>
             </div>
         </div>
     </nav>
-
     <!-- Mensagens -->
     <div class="container container-custom" th:if="${mensagem}">
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -316,7 +320,6 @@
 
             <!-- Produtos -->
             <div class="col-lg-9">
-                <!-- Cabeçalho com Ordenação -->
                 <div class="sort-section">
                     <h2><i class="fas fa-shopping-bag"></i> Nossos Produtos</h2>
                     <div>
@@ -333,24 +336,29 @@
                 <div class="row" th:if="${produtos != null && !produtos.isEmpty()}">
                     <div class="col-md-6 col-lg-4" th:each="produto : ${produtos}">
                         <div class="product-card">
-                            <img th:src="${produto.urlImagem}" 
-                                 th:alt="${produto.nome}">
-                            <h3 th:text="${produto.nome}">Nome da Camisa</h3>
+                            <img th:src="${produto.urlImagem}" th:alt="${produto.titulo}">
+                            <h3 th:text="${produto.titulo}">Título da Camisa</h3>
                             <p class="team-info">
-                                <i class="fas fa-shield-alt"></i> <span th:text="${produto.time}"></span> - 
                                 <i class="fas fa-tag"></i> <span th:text="${produto.marca}"></span>
+                                <span th:if="${produto.modelo != null}">- <span th:text="${produto.modelo}"></span></span>
+                                <span th:if="${produto.tamanho != null}">- <span th:text="${produto.tamanho}"></span></span>
+                                <span th:if="${produto.cor != null}">- <span th:text="${produto.cor}"></span></span>
+                            </p>
+                            <p>
+                                <span th:text="${produto.descricao}"></span>
+                            </p>
+                            <p>
+                                Estoque: <span th:text="${produto.estoque}"></span>
                             </p>
                             <p class="price">
                                 R$ <span th:text="${#numbers.formatDecimal(produto.preco, 1, 2)}"></span>
                             </p>
                             <div class="d-flex gap-2">
-                                <a th:href="@{/produto/{id}(id=${produto.id})}" 
+                                <a th:href="@{/produto/{id}(id=${produto.id})}"
                                    class="btn btn-primary-custom btn-custom flex-fill">
                                     <i class="fas fa-eye"></i> Detalhes
                                 </a>
-                                <form th:action="@{/carrinho/adicionar/{id}(id=${produto.id})}" 
-                                      method="post" 
-                                      class="flex-fill">
+                                <form th:action="@{/carrinho/adicionar/{id}(id=${produto.id})}" method="post" class="flex-fill">
                                     <button type="submit" class="btn btn-success-custom btn-custom w-100">
                                         <i class="fas fa-cart-plus"></i> Adicionar
                                     </button>
@@ -359,7 +367,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Estado Vazio -->
                 <div th:if="${produtos == null || produtos.isEmpty()}" class="empty-state">
                     <i class="fas fa-search"></i>
@@ -379,7 +386,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <h4><i class="fas fa-info-circle"></i> Sobre Nós</h4>
-                    <p>A maior loja de camisas de time do Brasil.</p>
+                    <p>A maior loja de camisas de times do Brasil.</p>
                 </div>
                 <div class="col-md-4">
                     <h4><i class="fas fa-link"></i> Links Rápidos</h4>

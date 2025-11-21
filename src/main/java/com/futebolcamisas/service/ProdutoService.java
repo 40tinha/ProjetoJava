@@ -1,7 +1,7 @@
 package com.futebolcamisas.service;
 
-import com.futebolcamisas.dao.ProdutoDAO;
 import com.futebolcamisas.model.Produto;
+import com.futebolcamisas.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,32 +10,33 @@ import java.util.List;
 
 @Service
 public class ProdutoService {
-    
+
     @Autowired
-    private ProdutoDAO produtoDAO;
+    private ProdutoRepository produtoRepository;
 
     public List<Produto> listarTodos() {
-        return produtoDAO.listarTodos();
+        return produtoRepository.findAll();
     }
 
     public Produto buscarPorId(Long id) {
-        Produto produto = produtoDAO.buscarPorId(id);
-        if (produto == null) {
-            throw new RuntimeException("Produto não encontrado");
-        }
-        return produto;
+        return produtoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
     }
 
     public List<Produto> buscarComFiltros(String time, String marca, String ordenacao) {
         List<Produto> produtos;
-        
-        if (time != null && !time.isEmpty() || marca != null && !marca.isEmpty()) {
-            produtos = produtoDAO.buscarPorFiltros(time, marca);
+
+        // Busca com filtro, caso passado
+        if ((time != null && !time.isEmpty()) || (marca != null && !marca.isEmpty())) {
+            produtos = produtoRepository.findByTimeContainingIgnoreCaseAndMarcaContainingIgnoreCase(
+                    time == null ? "" : time,
+                    marca == null ? "" : marca
+            );
         } else {
-            produtos = produtoDAO.listarTodos();
+            produtos = produtoRepository.findAll();
         }
 
-        // Aplicar ordenação
+        // Ordenação (na memória)
         if (ordenacao != null && !ordenacao.isEmpty()) {
             switch (ordenacao) {
                 case "preco-menor":
@@ -45,7 +46,7 @@ public class ProdutoService {
                     produtos.sort(Comparator.comparing(Produto::getPreco).reversed());
                     break;
                 default:
-                    // Relevância (mantém ordem original)
+                    // Relevância/padrão
                     break;
             }
         }
@@ -53,4 +54,3 @@ public class ProdutoService {
         return produtos;
     }
 }
-

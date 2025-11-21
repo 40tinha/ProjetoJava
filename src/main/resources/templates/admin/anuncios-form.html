@@ -1,71 +1,162 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de Anúncio</title>
+    <title th:text="${anuncio.id != null ? 'Editar Anúncio' : 'Novo Anúncio'}">Formulário de Anúncio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f0f0f0; }
-        header { background-color: #333; color: white; padding: 20px; text-align: center; }
-        .container { max-width: 800px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #333; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="text"], input[type="number"], textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 3px; box-sizing: border-box; }
-        textarea { resize: vertical; min-height: 100px; }
-        .button { display: inline-block; padding: 10px 20px; margin-right: 10px; border-radius: 3px; text-decoration: none; border: none; cursor: pointer; }
-        .btn-primary { background-color: #4CAF50; color: white; }
-        .btn-secondary { background-color: #6c757d; color: white; }
-        .btn-primary:hover { background-color: #45a049; }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.10);
+            padding: 15px 0;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+        }
+        .container-custom {
+            margin-top: 30px;
+            margin-bottom: 30px;
+            max-width: 850px;
+        }
+        .product-detail-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 40px;
+        }
+        h2 {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 25px;
+        }
+        label {
+            font-weight: 600;
+            margin-top: 18px;
+        }
+        input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            padding: 9px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-top: 7px;
+            background: #f8f8fa;
+            margin-bottom: 16px;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+        .form-actions {
+            margin-top: 22px;
+        }
+        .btn-custom {
+            border-radius: 25px;
+            padding: 12px 28px;
+            font-weight: 600;
+            font-size: 18px;
+            margin-right: 11px;
+        }
+        .btn-success-custom {
+            background: linear-gradient(135deg, #28a745 0%, #667eea 100%);
+            color: white;
+            border: none;
+        }
+        .btn-success-custom:hover {
+            background: #218838;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+        }
+        .btn-secondary:hover {
+            background: #495057;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Formulário de Anúncio</h1>
-    </header>
+<!-- Navbar igual -->
+<nav class="navbar">
     <div class="container">
-        <h1 th:if="${anuncio.id != null}">Editar Anúncio</h1>
-        <h1 th:unless="${anuncio.id != null}">Novo Anúncio</h1>
-        <form th:action="${anuncio.id != null ? '/admin/anuncios/' + anuncio.id : '/admin/anuncios'}" th:method="post" th:object="${anuncio}">
-            <div class="form-group">
-                <label for="titulo">Título:</label>
-                <input type="text" id="titulo" name="titulo" th:field="*{titulo}" required>
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <a class="logo" href="/">
+                <i class="fas fa-shirt"></i> Futebol Camisas
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                    <span th:if="${session.usuario}" class="text-muted">
+                        Olá, <strong th:text="${session.usuario.nome}"></strong>
+                    </span>
+                <a th:if="${session.usuario}" href="/logout" class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+                <a th:unless="${session.usuario}" href="/login" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </a>
             </div>
-            <div class="form-group">
-                <label for="descricao">Descrição:</label>
-                <textarea id="descricao" name="descricao" th:field="*{descricao}" required></textarea>
+        </div>
+    </div>
+</nav>
+<div class="container container-custom">
+    <div class="product-detail-card">
+        <h2 th:if="${anuncio.id != null}">Editar Anúncio</h2>
+        <h2 th:unless="${anuncio.id != null}">Novo Anúncio</h2>
+        <form th:action="@{${anuncio.id != null ? '/admin/anuncios/' + anuncio.id : '/admin/anuncios'}}"
+              th:method="post" th:object="${anuncio}">
+            <label for="titulo">Título:</label>
+            <input type="text" id="titulo" th:field="*{titulo}" required>
+
+            <label for="descricao">Descrição:</label>
+            <textarea id="descricao" th:field="*{descricao}" required></textarea>
+
+            <label for="preco">Preço (R$):</label>
+            <input type="number" id="preco" th:field="*{preco}" step="0.01" required>
+
+            <label for="marca">Marca:</label>
+            <input type="text" id="marca" th:field="*{marca}" required>
+
+            <label for="time">Time:</label>
+            <input type="text" id="time" th:field="*{time}" required>
+
+            <label for="temporada">Temporada:</label>
+            <input type="text" id="temporada" th:field="*{temporada}" required>
+
+            <label for="modelo">Modelo:</label>
+            <input type="text" id="modelo" th:field="*{modelo}" required>
+
+            <label for="tamanho">Tamanho:</label>
+            <input type="text" id="tamanho" th:field="*{tamanho}" required>
+
+            <label for="cor">Cor:</label>
+            <input type="text" id="cor" th:field="*{cor}" required>
+
+            <label for="estoque">Estoque:</label>
+            <input type="number" id="estoque" th:field="*{estoque}" required>
+
+            <label for="urlImagem">URL da Imagem:</label>
+            <input type="text" id="urlImagem" th:field="*{urlImagem}" />
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success-custom btn-custom">
+                    Salvar Anúncio
+                </button>
+                <a href="/admin/anuncios" class="btn btn-secondary btn-custom">Cancelar</a>
             </div>
-            <div class="form-group">
-                <label for="preco">Preço:</label>
-                <input type="number" id="preco" name="preco" th:field="*{preco}" step="0.01" required>
-            </div>
-            <div class="form-group">
-                <label for="marca">Marca:</label>
-                <input type="text" id="marca" name="marca" th:field="*{marca}" required>
-            </div>
-            <div class="form-group">
-                <label for="modelo">Modelo:</label>
-                <input type="text" id="modelo" name="modelo" th:field="*{modelo}" required>
-            </div>
-            <div class="form-group">
-                <label for="tamanho">Tamanho:</label>
-                <input type="text" id="tamanho" name="tamanho" th:field="*{tamanho}" required>
-            </div>
-            <div class="form-group">
-                <label for="cor">Cor:</label>
-                <input type="text" id="cor" name="cor" th:field="*{cor}" required>
-            </div>
-            <div class="form-group">
-                <label for="estoque">Estoque:</label>
-                <input type="number" id="estoque" name="estoque" th:field="*{estoque}" required>
-            </div>
-            <div class="form-group">
-                <label for="urlImagem">URL da Imagem:</label>
-                <input type="text" id="urlImagem" name="urlImagem" th:field="*{urlImagem}">
-            </div>
-            <button type="submit" class="button btn-primary">Salvar</button>
-            <a href="/admin/anuncios" class="button btn-secondary">Voltar</a>
         </form>
     </div>
+</div>
 </body>
 </html>

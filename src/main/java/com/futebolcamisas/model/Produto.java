@@ -1,30 +1,37 @@
 package com.futebolcamisas.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+@Entity
 public class Produto {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @NotBlank(message = "Nome é obrigatório")
     private String nome;
-    
+
     @NotBlank(message = "Descrição é obrigatória")
     private String descricao;
-    
+
     @NotNull(message = "Preço é obrigatório")
     @Positive(message = "Preço deve ser positivo")
     private Double preco;
-    
+
     private String urlImagem;
     private String time;
     private String marca;
     private String temporada;
     private Integer estoque;
 
-    public Produto() {
-    }
+    public Produto() {}
 
     public Produto(String nome, String descricao, Double preco, String urlImagem, String time, String marca, String temporada) {
         this.nome = nome;

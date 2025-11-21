@@ -89,13 +89,13 @@
                 <a href="/" class="btn btn-outline-primary btn-sm">
                     <i class="fas fa-home"></i> Início
                 </a>
-                <span th:if="${usuarioLogado}" class="text-muted">
-                    Olá, <span th:text="${usuarioLogado.nome}"></span>
-                </span>
-                <a th:if="${usuarioLogado}" href="/logout" class="btn btn-outline-danger btn-sm">
+                <span th:if="${session.usuario}" class="text-muted">
+    Olá, <strong th:text="${session.usuario.nome}"></strong>
+</span>
+                <a th:if="${session.usuario}" href="/logout" class="btn btn-outline-danger btn-sm">
                     <i class="fas fa-sign-out-alt"></i> Sair
                 </a>
-                <a th:unless="${usuarioLogado}" href="/login" class="btn btn-outline-primary btn-sm">
+                <a th:unless="${session.usuario}" href="/login" class="btn btn-outline-primary btn-sm">
                     <i class="fas fa-sign-in-alt"></i> Entrar
                 </a>
             </div>

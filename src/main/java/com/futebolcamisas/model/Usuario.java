@@ -1,23 +1,33 @@
 package com.futebolcamisas.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+@Entity
 public class Usuario {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @NotBlank(message = "Nome é obrigatório")
     @Size(min = 3, message = "Nome deve ter no mínimo 3 caracteres")
     private String nome;
-    
+
     @NotBlank(message = "Email é obrigatório")
     @Email(message = "Email inválido")
     private String email;
-    
+
     @NotBlank(message = "Senha é obrigatória")
     @Size(min = 6, message = "Senha deve ter no mínimo 6 caracteres")
     private String senha;
+
+    private String role = "USER"; // valores possíveis: "USER", "ADMIN"
 
     public Usuario() {
     }
@@ -59,5 +69,13 @@ public class Usuario {
     public void setSenha(String senha) {
         this.senha = senha;
     }
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
 }
 

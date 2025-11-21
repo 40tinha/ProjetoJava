@@ -1,14 +1,37 @@
 package com.futebolcamisas.model;
 
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Entity
 public class Carrinho {
-    private List<ItemCarrinho> itens;
 
-    public Carrinho() {
-        this.itens = new ArrayList<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
+    @OneToMany(mappedBy = "carrinho", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemCarrinho> itens = new ArrayList<>();
+
+    public Carrinho() {}
+
+    // Getter e setter para usuário
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public List<ItemCarrinho> getItens() {
@@ -22,10 +45,12 @@ public class Carrinho {
 
         if (itemExistente.isPresent()) {
             itemExistente.get().setQuantidade(
-                itemExistente.get().getQuantidade() + quantidade
+                    itemExistente.get().getQuantidade() + quantidade
             );
         } else {
-            itens.add(new ItemCarrinho(produto, quantidade));
+            ItemCarrinho novoItem = new ItemCarrinho(produto, quantidade);
+            novoItem.setCarrinho(this);
+            itens.add(novoItem);
         }
     }
 

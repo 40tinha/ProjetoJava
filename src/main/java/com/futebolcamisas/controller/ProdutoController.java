@@ -1,9 +1,9 @@
 package com.futebolcamisas.controller;
 
 import com.futebolcamisas.model.Carrinho;
-import com.futebolcamisas.model.Produto;
+import com.futebolcamisas.model.Anuncio;
+import com.futebolcamisas.repository.AnuncioRepository;
 import com.futebolcamisas.service.CarrinhoService;
-import com.futebolcamisas.service.ProdutoService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class ProdutoController {
 
     @Autowired
-    private ProdutoService produtoService;
+    private AnuncioRepository anuncioRepository;
 
     @Autowired
     private CarrinhoService carrinhoService;
@@ -23,16 +23,19 @@ public class ProdutoController {
     @GetMapping("/produto/{id}")
     public String detalhesProduto(@PathVariable Long id, HttpSession session, Model model) {
         try {
-            Produto produto = produtoService.buscarPorId(id);
-            model.addAttribute("produto", produto);
-            
-            // Adiciona o carrinho à sessão para exibir contador
+            Anuncio anuncio = anuncioRepository.findById(id).orElse(null);
+            if (anuncio == null) { // Corrigido!
+                return "redirect:/";
+            }
+            model.addAttribute("anuncio", anuncio); // No HTML, use ${anuncio.campo}
+
             Carrinho carrinho = carrinhoService.obterCarrinho(session);
             session.setAttribute("carrinho", carrinho);
-            
+
             return "produto";
         } catch (RuntimeException e) {
             return "redirect:/";
         }
     }
 }
+

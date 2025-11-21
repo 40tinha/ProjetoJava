@@ -4,7 +4,9 @@ import com.futebolcamisas.model.Anuncio;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface AnuncioRepository extends JpaRepository<Anuncio, Long> {
-    // Métodos adicionais podem ser definidos aqui
+    List<Anuncio> findByTime(String time);
 }

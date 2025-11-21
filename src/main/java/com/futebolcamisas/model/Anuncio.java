@@ -1,45 +1,61 @@
 package com.futebolcamisas.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
+@Entity
 public class Anuncio {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @NotBlank(message = "Título é obrigatório")
     private String titulo;
+
+    
     
     @NotBlank(message = "Descrição é obrigatória")
     private String descricao;
-    
+
     @NotNull(message = "Preço é obrigatório")
     @Positive(message = "Preço deve ser positivo")
     private Double preco;
-    
+
     @NotBlank(message = "Marca é obrigatória")
     private String marca;
-    
+
     @NotBlank(message = "Modelo é obrigatório")
     private String modelo;
-    
+
     @NotBlank(message = "Tamanho é obrigatório")
     private String tamanho;
-    
+
     @NotBlank(message = "Cor é obrigatória")
     private String cor;
-    
+
+    @NotBlank(message = "Time é obrigatório")
+    private String time;
+
+    @NotBlank(message = "Temporada é obrigatória")
+    private String temporada;
+
     private String urlImagem;
     private Integer estoque;
     private LocalDateTime dataCriacao;
     private LocalDateTime dataAtualizacao;
-    
+
     public Anuncio() {
     }
-    
-    public Anuncio(String titulo, String descricao, Double preco, String marca, String modelo, 
-                   String tamanho, String cor, String urlImagem, Integer estoque) {
+
+    public Anuncio(String titulo, String descricao, Double preco, String marca, String modelo,
+                   String tamanho, String cor, String urlImagem, Integer estoque, String time, String temporada) {
         this.titulo = titulo;
         this.descricao = descricao;
         this.preco = preco;
@@ -49,6 +65,8 @@ public class Anuncio {
         this.cor = cor;
         this.urlImagem = urlImagem;
         this.estoque = estoque;
+        this.time = time;
+        this.temporada = temporada;
         this.dataCriacao = LocalDateTime.now();
         this.dataAtualizacao = LocalDateTime.now();
     }
@@ -76,7 +94,13 @@ public class Anuncio {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
-    
+
+    public String getTemporada() {
+        return temporada;
+    }
+    public void setTemporada(String temporada) {
+        this.temporada = temporada;
+    }
     public Double getPreco() {
         return preco;
     }
@@ -84,7 +108,13 @@ public class Anuncio {
     public void setPreco(Double preco) {
         this.preco = preco;
     }
-    
+
+    public String getTime() {
+        return time;
+    }
+    public void setTime(String time) {
+        this.time = time;
+    }
     public String getMarca() {
         return marca;
     }

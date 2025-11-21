@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${produto.titulo}">Detalhes do Produto</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+        }
+        .cart-badge {
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+            position: relative;
+            top: -8px;
+            margin-left: 5px;
+        }
+        .container-custom {
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        .product-detail-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        .product-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+        }
+        .product-info {
+            padding: 40px;
+        }
+        .product-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .product-price {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .product-description {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .spec-table {
+            margin-bottom: 30px;
+        }
+        .spec-table th {
+            font-weight: 600;
+            padding: 10px;
+            background: #f8f9fa;
+        }
+        .spec-table td {
+            padding: 10px;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .quantity-input {
+            width: 80px;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .btn-custom {
+            border-radius: 25px;
+            padding: 15px 40px;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn-success-custom {
+            background: #28a745;
+            color: white;
+        }
+        .btn-success-custom:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-link:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+        .reviews-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+        .review {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px 0;
+        }
+        .review:last-child {
+            border-bottom: none;
+        }
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .stars {
+            color: #ffc107;
+        }
+        .footer {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <a class="logo" href="/">
+                <i class="fas fa-shirt"></i> Futebol Camisas
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                    <span th:if="${session.usuario}" class="text-muted">
+                        Olá, <strong th:text="${session.usuario.nome}"></strong>
+                    </span>
+                <a th:if="${session.usuario}" href="/logout" class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+                <a th:unless="${session.usuario}" href="/login" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </a>
+                <!-- Botão administração só para admin -->
+                <a th:if="${session.usuario != null && session.usuario.role == 'ADMIN'}"
+                   href="/admin/anuncios" class="btn btn-outline-warning btn-sm">
+                    <i class="fas fa-tools"></i> Administração
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Mensagens -->
+<div class="container container-custom" th:if="${mensagem}">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i> <span th:text="${mensagem}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+<div class="container container-custom">
+    <a href="/admin/anuncios" class="back-link">
+        <i class="fas fa-arrow-left"></i> Voltar para a lista de anúncios
+    </a>
+
+    <div class="product-detail-card" th:if="${anuncio != null}">
+        <div class="row g-0">
+            <div class="col-md-6">
+                <img th:src="${anuncio.urlImagem}" th:alt="${anuncio.titulo}" class="product-image">
+            </div>
+            <div class="col-md-6">
+                <div class="product-info">
+                    <h1 class="product-title" th:text="${anuncio.titulo}">Título do Anúncio</h1>
+                    <p class="product-description" th:text="${anuncio.descricao}">Descrição do produto</p>
+                    <p class="product-price">
+                        R$ <span th:text="${#numbers.formatDecimal(anuncio.preco, 1, 2)}"></span>
+                    </p>
+                    <!-- Especificações -->
+                    <div class="spec-table">
+                        <h4><i class="fas fa-info-circle"></i> Especificações</h4>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th><i class="fas fa-tag"></i> Marca</th>
+                                <td th:text="${anuncio.marca}">Marca</td>
+                            </tr>
+                            <tr>
+                                <th>Modelo</th>
+                                <td th:text="${anuncio.modelo}">Modelo</td>
+                            </tr>
+                            <tr>
+                                <th>Tamanho</th>
+                                <td th:text="${anuncio.tamanho}">Tamanho</td>
+                            </tr>
+                            <tr>
+                                <th>Cor</th>
+                                <td th:text="${anuncio.cor}">Cor</td>
+                            </tr>
+                            <tr>
+                                <th>Estoque</th>
+                                <td th:text="${anuncio.estoque}">Estoque</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <!-- Botões de ação só para admin -->
+                    <div class="d-flex gap-2" th:if="${session.usuario != null && session.usuario.role == 'ADMIN'}">
+                        <a th:href="@{/admin/anuncios/{id}/editar(id=${anuncio.id})}" class="btn btn-warning btn-custom flex-fill">
+                            <i class="fas fa-edit"></i> Editar Anúncio
+                        </a>
+                        <a th:href="@{/admin/anuncios/{id}/deletar(id=${anuncio.id})}" class="btn btn-danger btn-custom flex-fill"
+                           onclick="return confirm('Tem certeza que deseja excluir este anúncio?');">
+                            <i class="fas fa-trash"></i> Excluir
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Avaliações -->
+    <div class="reviews-section">
+        <h3><i class="fas fa-star"></i> Avaliações de Clientes</h3>
+        <div th:each="avaliacao : ${avaliacoes}">
+            <div class="review">
+                <div class="review-header">
+                    <strong><i class="fas fa-user"></i> <span th:text="${avaliacao.autor}"></span></strong>
+                    <span class="stars" th:text="'★'.repeat(${avaliacao.estrelas})"></span>
+                </div>
+                <p th:text="${avaliacao.texto}"></p>
+                <div th:if="${session.usuario != null && session.usuario.role == 'ADMIN'}" class="d-flex gap-2">
+                    <a th:href="@{/admin/anuncios/{anuncioId}/avaliacao/{id}/editar(anuncioId=${anuncio.id},id=${avaliacao.id})}"
+                       class="btn btn-warning btn-sm">Editar</a>
+                    <a th:href="@{/admin/anuncios/{anuncioId}/avaliacao/{id}/deletar(anuncioId=${anuncio.id},id=${avaliacao.id})}"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Excluir avaliação?')">Excluir</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h4><i class="fas fa-info-circle"></i> Sobre Nós</h4>
+                <p>A maior loja de camisas de time do Brasil.</p>
+            </div>
+            <div class="col-md-4">
+                <h4><i class="fas fa-link"></i> Links Rápidos</h4>
+                <ul class="list-unstyled">
+                    <li><a href="#">Política de Privacidade</a></li>
+                    <li><a href="#">Termos de Uso</a></li>
+                    <li><a href="#">Contato</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h4><i class="fas fa-share-alt"></i> Siga-nos</h4>
+                <div class="d-flex gap-3">
+                    <a href="#"><i class="fab fa-facebook-f fa-2x"></i></a>
+                    <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
+                    <a href="#"><i class="fab fa-twitter fa-2x"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="text-center">
+            <p>&copy; 2025 Futebol Camisas. Todos os direitos reservados.</p>
+        </div>
+    </div>
+</footer>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

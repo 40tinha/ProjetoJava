@@ -3,54 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Anúncios</title>
+    <title>Admin - Lista de Anúncios</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f0f0f0; }
-        header { background-color: #333; color: white; padding: 20px; text-align: center; }
-        .container { max-width: 1200px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #333; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        table th, table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        table th { background-color: #f2f2f2; }
-        table tr:nth-child(even) { background-color: #f9f9f9; }
-        .action-link { color: #007bff; text-decoration: none; margin: 0 5px; }
-        .action-link:hover { text-decoration: underline; }
-        .btn { display: inline-block; padding: 10px 20px; margin: 10px 0; border-radius: 3px; text-decoration: none; color: white; }
-        .btn-primary { background-color: #4CAF50; }
-        .btn-danger { background-color: #d9534f; }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.10);
+            padding: 15px 0;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+        }
+        .container-custom {
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        .admin-title {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.13);
+            padding: 24px;
+            margin-bottom: 28px;
+            transition: box-shadow 0.2s;
+        }
+        .product-card:hover {
+            box-shadow: 0 8px 24px rgba(102,126,234,0.17);
+        }
+        .product-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+        .product-card h3 {
+            font-size: 21px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .product-card .info {
+            color: #666;
+            font-size: 15px;
+        }
+        .product-card .price {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 21px;
+            margin-bottom: 8px;
+        }
+        .btn-custom {
+            border-radius: 25px;
+            padding: 9px 16px;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .btn-primary-custom { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border:none;}
+        .btn-primary-custom:hover { background: #667eea; }
+        .btn-warning { background: #ffc107; color: #333; border:none;}
+        .btn-danger { background: #dc3545; color: white; border:none;}
+        .btn-success { background: #28a745; color: white; border:none;}
+        .actions-admin {margin-top: 11px}
+        .btn + .btn {margin-left: 6px;}
+        .footer {
+            background: rgba(255,255,255,0.95);
+            padding: 30px 0;
+            margin-top: 50px;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Gerenciador de Anúncios</h1>
-    </header>
+<nav class="navbar">
     <div class="container">
-        <h1>Lista de Anúncios de Tênis</h1>
-        <a href="/admin/anuncios/novo" class="btn btn-primary">Novo Anúncio</a>
-        <table th:if="${anuncios.size() > 0}">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Marca</th>
-                    <th>Preço</th>
-                    <th>Estoque</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="anuncio : ${anuncios}">
-                    <td th:text="${anuncio.titulo}"></td>
-                    <td th:text="${anuncio.marca}"></td>
-                    <td th:text="${anuncio.preco}"></td>
-                    <td th:text="${anuncio.estoque}"></td>
-                    <td>
-                        <a th:href="'/admin/anuncios/' + ${anuncio.id} + '/editar'" class="action-link">Editar</a>
-                        <a th:href="'/admin/anuncios/' + ${anuncio.id} + '/deletar'" class="action-link" onclick="return confirm('Deseja deletar este item?')">Deletar</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <p th:unless="${anuncios.size() > 0}">Nenhum anúncio cadastrado. <a href="/admin/anuncios/novo">Clique aqui</a> para criar um.</p>
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <a class="logo" href="/">
+                <i class="fas fa-shirt"></i> Futebol Camisas
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                    <span th:if="${session.usuario}" class="text-muted">
+                        Olá, <strong th:text="${session.usuario.nome}"></strong>
+                    </span>
+                <a th:if="${session.usuario}" href="/logout" class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+                <a th:unless="${session.usuario}" href="/login" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </a>
+                <a th:if="${session.usuario != null and session.usuario.role == 'ADMIN'}"
+                   href="/admin/anuncios"
+                   class="btn btn-outline-warning btn-sm">
+                    <i class="fas fa-tools"></i> Administração
+                </a>
+            </div>
+        </div>
     </div>
+</nav>
+<div class="container container-custom">
+    <h1 class="admin-title"><i class="fas fa-tools"></i> Gerenciamento de Anúncios</h1>
+    <a th:if="${session.usuario != null and session.usuario.role == 'ADMIN'}"
+       href="/admin/anuncios/novo" class="btn btn-success btn-custom mb-3">
+        <i class="fas fa-plus"></i> Novo Anúncio
+    </a>
+    <div class="row">
+        <div class="col-md-6 col-lg-4" th:each="anuncio : ${anuncios}">
+            <div class="product-card">
+                <img th:src="${anuncio.urlImagem}" th:alt="${anuncio.titulo}"/>
+                <h3 th:text="${anuncio.titulo}">Título</h3>
+                <div class="info">
+                    <span th:text="${anuncio.marca}"></span> - <span th:text="${anuncio.modelo}"></span> - Tamanho: <span th:text="${anuncio.tamanho}"></span>
+                </div>
+                <div class="price">
+                    R$ <span th:text="${#numbers.formatDecimal(anuncio.preco, 1, 2)}"></span>
+                </div>
+                <div>Estoque: <span th:text="${anuncio.estoque}"></span></div>
+                <div class="actions-admin">
+                    <a th:href="@{/admin/anuncios/{id}/detalhar(id=${anuncio.id})}" class="btn btn-primary-custom btn-custom">
+                        <i class="fas fa-eye"></i> Detalhar
+                    </a>
+                    <a th:href="@{/admin/anuncios/{id}/editar(id=${anuncio.id})}" class="btn btn-warning btn-custom">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a th:href="@{/admin/anuncios/{id}/deletar(id=${anuncio.id})}" class="btn btn-danger btn-custom"
+                       onclick="return confirm('Deseja deletar este anúncio?')">
+                        <i class="fas fa-trash"></i> Excluir
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p th:if="${anuncios.size() == 0}">Nenhum anúncio cadastrado.
+        <a th:href="@{/admin/anuncios/novo}">Clique aqui</a> para criar um.</p>
+</div>
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h4><i class="fas fa-info-circle"></i> Sobre Nós</h4>
+                <p>A maior loja de camisas de time do Brasil.</p>
+            </div>
+            <div class="col-md-4">
+                <h4><i class="fas fa-link"></i> Links Rápidos</h4>
+                <ul class="list-unstyled">
+                    <li><a href="#">Política de Privacidade</a></li>
+                    <li><a href="#">Termos de Uso</a></li>
+                    <li><a href="#">Contato</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h4><i class="fas fa-share-alt"></i> Siga-nos</h4>
+                <div class="d-flex gap-3">
+                    <a href="#"><i class="fab fa-facebook-f fa-2x"></i></a>
+                    <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
+                    <a href="#"><i class="fab fa-twitter fa-2x"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="text-center">
+            <p>&copy; 2025 Futebol Camisas. Todos os direitos reservados.</p>
+        </div>
+    </div>
+</footer>
 </body>
 </html>
