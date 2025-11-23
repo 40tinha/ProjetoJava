@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Lista de Anúncios</title>
+    <title>Admin - Gerenciamento de Produtos</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -17,6 +17,7 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 6px rgba(0,0,0,0.10);
             padding: 15px 0;
+            margin-bottom: 20px;
         }
         .logo {
             font-size: 24px;
@@ -28,11 +29,41 @@
             margin-top: 30px;
             margin-bottom: 30px;
         }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
         .admin-title {
             color: #ffffff;
             font-weight: bold;
             font-size: 32px;
-            margin-bottom: 30px;
+            margin: 0;
+        }
+        .btn-new {
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .btn-new:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+            color: white;
+        }
+        .alert {
+            margin-bottom: 20px;
         }
         .product-card {
             background: white;
@@ -41,6 +72,9 @@
             padding: 24px;
             margin-bottom: 28px;
             transition: box-shadow 0.2s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
         .product-card:hover {
             box-shadow: 0 8px 24px rgba(102,126,234,0.17);
@@ -60,102 +94,251 @@
         }
         .product-card .info {
             color: #666;
-            font-size: 15px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            flex-grow: 1;
         }
         .product-card .price {
             color: #667eea;
             font-weight: bold;
             font-size: 21px;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        .product-card .stock-info {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .stock-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .stock-available {
+            background: #d4edda;
+            color: #155724;
+        }
+        .stock-low {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .stock-unavailable {
+            background: #f8d7da;
+            color: #721c24;
         }
         .btn-custom {
             border-radius: 25px;
             padding: 9px 16px;
             font-weight: 600;
-            font-size: 15px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .btn-primary-custom { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border:none;}
-        .btn-primary-custom:hover { background: #667eea; }
-        .btn-warning { background: #ffc107; color: #333; border:none;}
-        .btn-danger { background: #dc3545; color: white; border:none;}
-        .btn-success { background: #28a745; color: white; border:none;}
-        .actions-admin {margin-top: 11px}
-        .btn + .btn {margin-left: 6px;}
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+        .btn-warning-custom {
+            background: #ffc107;
+            color: #333;
+        }
+        .btn-warning-custom:hover {
+            background: #ffb300;
+            transform: translateY(-2px);
+        }
+        .btn-danger-custom {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-danger-custom:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+        .actions-admin {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .empty-state {
+            background: white;
+            padding: 60px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .empty-state i {
+            font-size: 80px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
         .footer {
             background: rgba(255,255,255,0.95);
             padding: 30px 0;
             margin-top: 50px;
         }
+        @media (max-width: 768px) {
+            .admin-title {
+                font-size: 24px;
+            }
+            .actions-admin {
+                flex-direction: column;
+            }
+            .btn-custom {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
+<!-- Navbar -->
 <nav class="navbar">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex justify-content-between align-items-center w-100 flex-wrap gap-2">
             <a class="logo" href="/">
                 <i class="fas fa-shirt"></i> Futebol Camisas
             </a>
-            <div class="d-flex align-items-center gap-3">
-                    <span th:if="${session.usuario}" class="text-muted">
-                        Olá, <strong th:text="${session.usuario.nome}"></strong>
-                    </span>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span th:if="${session.usuario}" class="text-muted">
+                    Olá, <strong th:text="${session.usuario.nome}"></strong>
+                </span>
                 <a th:if="${session.usuario}" href="/logout" class="btn btn-outline-danger btn-sm">
                     <i class="fas fa-sign-out-alt"></i> Sair
                 </a>
                 <a th:unless="${session.usuario}" href="/login" class="btn btn-outline-primary btn-sm">
                     <i class="fas fa-sign-in-alt"></i> Entrar
                 </a>
-                <a th:if="${session.usuario != null and session.usuario.role == 'ADMIN'}"
-                   href="/admin/anuncios"
-                   class="btn btn-outline-warning btn-sm">
-                    <i class="fas fa-tools"></i> Administração
+                <a href="/" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-home"></i> Home
                 </a>
             </div>
         </div>
     </div>
 </nav>
+
 <div class="container container-custom">
-    <h1 class="admin-title"><i class="fas fa-tools"></i> Gerenciamento de Anúncios</h1>
-    <a th:if="${session.usuario != null and session.usuario.role == 'ADMIN'}"
-       href="/admin/anuncios/novo" class="btn btn-success btn-custom mb-3">
-        <i class="fas fa-plus"></i> Novo Anúncio
-    </a>
-    <div class="row">
-        <div class="col-md-6 col-lg-4" th:each="anuncio : ${anuncios}">
+    <!-- Header com Título e Botão -->
+    <div class="admin-header">
+        <h1 class="admin-title">
+            <i class="fas fa-tools"></i> Gerenciar Produtos
+        </h1>
+        <a href="/produtos/admin/novo" class="btn-new">
+            <i class="fas fa-plus-circle"></i> Novo Produto
+        </a>
+    </div>
+
+    <!-- Mensagens de Sucesso/Erro -->
+    <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i> <span th:text="${sucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle"></i> <span th:text="${erro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Grid de Produtos -->
+    <div class="row" th:if="${produtos != null && !produtos.isEmpty()}">
+        <div class="col-md-6 col-lg-4" th:each="produto : ${produtos}">
             <div class="product-card">
-                <img th:src="${anuncio.urlImagem}" th:alt="${anuncio.titulo}"/>
-                <h3 th:text="${anuncio.titulo}">Título</h3>
+                <!-- Imagem -->
+                <img th:src="${produto.urlImagem}"
+                     th:alt="${produto.titulo}"
+                     onerror="this.src='https://via.placeholder.com/220x220?text=Sem+Imagem'"/>
+
+                <!-- Título -->
+                <h3 th:text="${produto.titulo}">Título</h3>
+
+                <!-- Informações -->
                 <div class="info">
-                    <span th:text="${anuncio.marca}"></span> - <span th:text="${anuncio.modelo}"></span> - Tamanho: <span th:text="${anuncio.tamanho}"></span>
+                    <div>
+                        <strong>Marca:</strong> <span th:text="${produto.marca}"></span>
+                    </div>
+                    <div>
+                        <strong>Modelo:</strong> <span th:text="${produto.modelo}"></span>
+                    </div>
+                    <div>
+                        <strong>Time:</strong> <span th:text="${produto.time}"></span>
+                    </div>
+                    <div>
+                        <strong>Temporada:</strong> <span th:text="${produto.temporada}"></span>
+                    </div>
                 </div>
+
+                <!-- Preço -->
                 <div class="price">
-                    R$ <span th:text="${#numbers.formatDecimal(anuncio.preco, 1, 2)}"></span>
+                    R$ <span th:text="${#numbers.formatDecimal(produto.preco, 1, 2, 'COMMA')}"></span>
                 </div>
-                <div>Estoque: <span th:text="${anuncio.estoque}"></span></div>
+
+                <!-- Estoque -->
+                <div class="stock-info">
+                    <span th:if="${produto.estoque > 5}" class="stock-badge stock-available">
+                        <i class="fas fa-check-circle"></i> Em Estoque (<span th:text="${produto.estoque}"></span>)
+                    </span>
+                    <span th:if="${produto.estoque > 0 && produto.estoque <= 5}" class="stock-badge stock-low">
+                        <i class="fas fa-exclamation-triangle"></i> Pouco Estoque (<span th:text="${produto.estoque}"></span>)
+                    </span>
+                    <span th:if="${produto.estoque <= 0}" class="stock-badge stock-unavailable">
+                        <i class="fas fa-times-circle"></i> Fora de Estoque
+                    </span>
+                </div>
+
+                <!-- Ações -->
                 <div class="actions-admin">
-                    <a th:href="@{/admin/anuncios/{id}/detalhar(id=${anuncio.id})}" class="btn btn-primary-custom btn-custom">
-                        <i class="fas fa-eye"></i> Detalhar
-                    </a>
-                    <a th:href="@{/admin/anuncios/{id}/editar(id=${anuncio.id})}" class="btn btn-warning btn-custom">
+                    <a th:href="@{/produtos/admin/{id}/editar(id=${produto.id})}"
+                       class="btn btn-custom btn-primary-custom flex-fill">
                         <i class="fas fa-edit"></i> Editar
                     </a>
-                    <a th:href="@{/admin/anuncios/{id}/deletar(id=${anuncio.id})}" class="btn btn-danger btn-custom"
-                       onclick="return confirm('Deseja deletar este anúncio?')">
-                        <i class="fas fa-trash"></i> Excluir
+                    <a th:href="@{/produtos/detalhe/{id}(id=${produto.id})}"
+                       class="btn btn-custom btn-warning-custom flex-fill">
+                        <i class="fas fa-eye"></i> Visualizar
                     </a>
+                    <form th:action="@{/produtos/admin/{id}/deletar(id=${produto.id})}"
+                          method="POST"
+                          style="flex: 1;">
+                        <button type="submit"
+                                class="btn btn-custom btn-danger-custom w-100"
+                                onclick="return confirm('Tem certeza que deseja deletar este produto?')">
+                            <i class="fas fa-trash"></i> Deletar
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    <p th:if="${anuncios.size() == 0}">Nenhum anúncio cadastrado.
-        <a th:href="@{/admin/anuncios/novo}">Clique aqui</a> para criar um.</p>
+
+    <!-- Estado Vazio -->
+    <div th:if="${produtos == null || produtos.isEmpty()}" class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <h3>Nenhum produto cadastrado</h3>
+        <p class="text-muted">Comece criando seu primeiro produto</p>
+        <a href="/produtos/admin/novo" class="btn btn-success btn-custom mt-3">
+            <i class="fas fa-plus-circle"></i> Criar Primeiro Produto
+        </a>
+    </div>
 </div>
+
+<!-- Footer -->
 <footer class="footer">
     <div class="container">
         <div class="row">
             <div class="col-md-4">
                 <h4><i class="fas fa-info-circle"></i> Sobre Nós</h4>
-                <p>A maior loja de camisas de time do Brasil.</p>
+                <p>A maior loja de camisas de times do Brasil.</p>
             </div>
             <div class="col-md-4">
                 <h4><i class="fas fa-link"></i> Links Rápidos</h4>
@@ -180,5 +363,7 @@
         </div>
     </div>
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

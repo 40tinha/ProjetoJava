@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import java.time.LocalDateTime;
 
 @Entity
 public class Produto {
@@ -15,8 +16,8 @@ public class Produto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Nome é obrigatório")
-    private String nome;
+    @NotBlank(message = "Título é obrigatório")
+    private String titulo;
 
     @NotBlank(message = "Descrição é obrigatória")
     private String descricao;
@@ -25,24 +26,50 @@ public class Produto {
     @Positive(message = "Preço deve ser positivo")
     private Double preco;
 
-    private String urlImagem;
-    private String time;
+    @NotBlank(message = "Marca é obrigatória")
     private String marca;
+
+    @NotBlank(message = "Modelo é obrigatório")
+    private String modelo;
+
+    @NotBlank(message = "Tamanho é obrigatório")
+    private String tamanho;
+
+    @NotBlank(message = "Cor é obrigatória")
+    private String cor;
+
+    @NotBlank(message = "Time é obrigatório")
+    private String time;
+
+    @NotBlank(message = "Temporada é obrigatória")
     private String temporada;
+
+    private String urlImagem;
     private Integer estoque;
+    private LocalDateTime dataCriacao;
+    private LocalDateTime dataAtualizacao;
 
-    public Produto() {}
-
-    public Produto(String nome, String descricao, Double preco, String urlImagem, String time, String marca, String temporada) {
-        this.nome = nome;
-        this.descricao = descricao;
-        this.preco = preco;
-        this.urlImagem = urlImagem;
-        this.time = time;
-        this.marca = marca;
-        this.temporada = temporada;
+    public Produto() {
     }
 
+    public Produto(String titulo, String descricao, Double preco, String marca, String modelo,
+                   String tamanho, String cor, String urlImagem, Integer estoque, String time, String temporada) {
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.preco = preco;
+        this.marca = marca;
+        this.modelo = modelo;
+        this.tamanho = tamanho;
+        this.cor = cor;
+        this.urlImagem = urlImagem;
+        this.estoque = estoque;
+        this.time = time;
+        this.temporada = temporada;
+        this.dataCriacao = LocalDateTime.now();
+        this.dataAtualizacao = LocalDateTime.now();
+    }
+
+    // GETTERS E SETTERS
     public Long getId() {
         return id;
     }
@@ -51,12 +78,12 @@ public class Produto {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     public String getDescricao() {
@@ -75,12 +102,36 @@ public class Produto {
         this.preco = preco;
     }
 
-    public String getUrlImagem() {
-        return urlImagem;
+    public String getMarca() {
+        return marca;
     }
 
-    public void setUrlImagem(String urlImagem) {
-        this.urlImagem = urlImagem;
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+
+    public String getTamanho() {
+        return tamanho;
+    }
+
+    public void setTamanho(String tamanho) {
+        this.tamanho = tamanho;
+    }
+
+    public String getCor() {
+        return cor;
+    }
+
+    public void setCor(String cor) {
+        this.cor = cor;
     }
 
     public String getTime() {
@@ -91,20 +142,20 @@ public class Produto {
         this.time = time;
     }
 
-    public String getMarca() {
-        return marca;
-    }
-
-    public void setMarca(String marca) {
-        this.marca = marca;
-    }
-
     public String getTemporada() {
         return temporada;
     }
 
     public void setTemporada(String temporada) {
         this.temporada = temporada;
+    }
+
+    public String getUrlImagem() {
+        return urlImagem;
+    }
+
+    public void setUrlImagem(String urlImagem) {
+        this.urlImagem = urlImagem;
     }
 
     public Integer getEstoque() {
@@ -114,5 +165,20 @@ public class Produto {
     public void setEstoque(Integer estoque) {
         this.estoque = estoque;
     }
-}
 
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
+    }
+
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+        this.dataAtualizacao = dataAtualizacao;
+    }
+}

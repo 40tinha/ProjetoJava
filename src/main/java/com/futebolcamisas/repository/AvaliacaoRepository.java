@@ -1,10 +1,14 @@
 package com.futebolcamisas.repository;
 
 import com.futebolcamisas.model.Avaliacao;
+import com.futebolcamisas.model.Produto;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import java.util.List;
 
+@Repository
 public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long> {
-    // Consulta para buscar todas avaliações de um anúncio específico
-    List<Avaliacao> findByAnuncioId(Long anuncioId);
+
+    List<Avaliacao> findByProdutoId(Long produtoId);
+    List<Avaliacao> findByProdutoIdOrderByDataCriacaoDesc(Long produtoId);
 }

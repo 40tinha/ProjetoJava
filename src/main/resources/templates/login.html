@@ -2,38 +2,326 @@
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Futebol Camisas</title>
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+        }
+        .auth-box {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+        .auth-logo {
+            display: block;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .auth-logo:hover {
+            color: #764ba2;
+            text-decoration: none;
+        }
+        .auth-box h2 {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 15px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #f9f9f9;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .toggle-password {
+            position: relative;
+        }
+        .toggle-password .toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #667eea;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+        }
+        .alert {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border: none;
+        }
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .alert i {
+            margin-right: 8px;
+        }
+        .btn-auth {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        .btn-auth:active {
+            transform: translateY(0);
+        }
+        .auth-link {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+        }
+        .auth-link p {
+            margin: 0;
+            color: #666;
+            font-size: 15px;
+        }
+        .auth-link a {
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .auth-link a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .remember-forgot label {
+            margin: 0;
+            font-weight: 500;
+            color: #666;
+        }
+        .remember-forgot a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .remember-forgot a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #ddd;
+        }
+        .divider span {
+            background: white;
+            padding: 0 10px;
+            position: relative;
+            color: #999;
+            font-size: 13px;
+        }
+    </style>
 </head>
 <body>
+<div class="auth-container">
+    <div class="auth-box">
+        <!-- Logo -->
+        <a href="/" class="auth-logo">
+            <i class="fas fa-shirt"></i> Futebol Camisas
+        </a>
 
-    <div class="auth-container">
-        <div class="auth-box">
-            <a href="/" class="logo auth-logo">Futebol Camisas</a>
-            <h2>Acesse sua Conta</h2>
-            
-            <div th:if="${erro}" class="alert alert-error" th:text="${erro}"></div>
-            <div th:if="${sucesso}" class="alert alert-success" th:text="${sucesso}"></div>
-            
-            <form th:action="@{/login}" method="post" class="auth-form">
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="senha">Senha:</label>
-                    <input type="password" id="senha" name="senha" required>
-                </div>
-                <button type="submit" class="btn-auth">Entrar</button>
-            </form>
+        <!-- Título -->
+        <h2><i class="fas fa-sign-in-alt"></i> Acesse sua Conta</h2>
 
-            <div class="auth-link">
-                <p>Não tem uma conta? <a th:href="@{/cadastro}">Cadastre-se</a></p>
+        <!-- Mensagens de Erro/Sucesso -->
+        <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i>
+            <span th:text="${erro}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${sucesso}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Formulário -->
+        <form th:action="@{/login}" method="post" class="auth-form">
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">
+                    <i class="fas fa-envelope"></i> Email *
+                </label>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       placeholder="seu.email@exemplo.com"
+                       required
+                       autocomplete="email">
             </div>
+
+            <!-- Senha -->
+            <div class="form-group">
+                <label for="senha">
+                    <i class="fas fa-lock"></i> Senha *
+                </label>
+                <div class="toggle-password">
+                    <input type="password"
+                           id="senha"
+                           name="senha"
+                           placeholder="Digite sua senha"
+                           required
+                           autocomplete="current-password">
+                    <button type="button" class="toggle-btn" onclick="togglePassword('senha')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Lembrar e Esqueceu Senha -->
+            <div class="remember-forgot">
+                <label>
+                    <input type="checkbox" name="lembrar" id="lembrar" style="margin-right: 6px;">
+                    Lembrar de mim
+                </label>
+                <a href="#" onclick="alert('Funcionalidade em desenvolvimento'); return false;">
+                    <i class="fas fa-question-circle"></i> Esqueceu a senha?
+                </a>
+            </div>
+
+            <!-- Botão Submit -->
+            <button type="submit" class="btn-auth">
+                <i class="fas fa-sign-in-alt"></i> Entrar
+            </button>
+        </form>
+
+        <!-- Divisor -->
+        <div class="divider">
+            <span>Não tem uma conta?</span>
+        </div>
+
+        <!-- Link para Cadastro -->
+        <div class="auth-link">
+            <p>
+                <a th:href="@{/cadastro}">
+                    <i class="fas fa-user-plus"></i> Cadastre-se agora
+                </a>
+            </p>
         </div>
     </div>
+</div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Toggle de visibilidade de senha
+    function togglePassword(fieldId) {
+        const field = document.getElementById(fieldId);
+        const icon = event.target.closest('.toggle-btn').querySelector('i');
+
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            field.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    // Auto-focar no campo de email ao carregar
+    document.addEventListener('DOMContentLoaded', function() {
+        const emailInput = document.getElementById('email');
+        if (emailInput && !emailInput.value) {
+            emailInput.focus();
+        }
+    });
+
+    // Limpar erro ao digitar
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('focus', function() {
+            const alert = document.querySelector('.alert-danger');
+            if (alert) {
+                alert.style.opacity = '0.5';
+            }
+        });
+        input.addEventListener('blur', function() {
+            const alert = document.querySelector('.alert-danger');
+            if (alert) {
+                alert.style.opacity = '1';
+            }
+        });
+    });
+</script>
 </body>
 </html>
-

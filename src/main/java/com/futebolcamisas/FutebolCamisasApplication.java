@@ -10,4 +10,3 @@ public class FutebolCamisasApplication {
         SpringApplication.run(FutebolCamisasApplication.class, args);
     }
 }
-

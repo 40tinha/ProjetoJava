@@ -73,6 +73,11 @@
         .spec-table {
             margin-bottom: 30px;
         }
+        .spec-table h4 {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
         .spec-table th {
             font-weight: 600;
             padding: 10px;
@@ -111,6 +116,7 @@
         .btn-primary-custom:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            color: white;
         }
         .btn-success-custom {
             background: #28a745;
@@ -158,6 +164,21 @@
             padding: 30px 0;
             margin-top: 50px;
         }
+        .stock-badge {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .stock-available {
+            background: #d4edda;
+            color: #155724;
+        }
+        .stock-unavailable {
+            background: #f8d7da;
+            color: #721c24;
+        }
     </style>
 </head>
 <body>
@@ -169,9 +190,9 @@
                 <i class="fas fa-shirt"></i> Futebol Camisas
             </a>
             <div class="d-flex align-items-center gap-3">
-                    <span th:if="${session.usuario}" class="text-muted">
-                        Olá, <strong th:text="${session.usuario.nome}"></strong>
-                    </span>
+                <span th:if="${session.usuario}" class="text-muted">
+                    Olá, <strong th:text="${session.usuario.nome}"></strong>
+                </span>
                 <a th:if="${session.usuario}" href="/logout" class="btn btn-outline-danger btn-sm">
                     <i class="fas fa-sign-out-alt"></i> Sair
                 </a>
@@ -180,7 +201,7 @@
                 </a>
                 <!-- Botão administração só para admin -->
                 <a th:if="${session.usuario != null && session.usuario.role == 'ADMIN'}"
-                   href="/admin/anuncios" class="btn btn-outline-warning btn-sm">
+                   href="/produtos/admin" class="btn btn-outline-warning btn-sm">
                     <i class="fas fa-tools"></i> Administração
                 </a>
             </div>
@@ -195,58 +216,106 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 </div>
+
+<div class="container container-custom" th:if="${erro}">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle"></i> <span th:text="${erro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
 <div class="container container-custom">
-    <a href="/admin/anuncios" class="back-link">
-        <i class="fas fa-arrow-left"></i> Voltar para a lista de anúncios
+    <a href="/produtos" class="back-link">
+        <i class="fas fa-arrow-left"></i> Voltar para os produtos
     </a>
 
-    <div class="product-detail-card" th:if="${anuncio != null}">
+    <div class="product-detail-card" th:if="${produto != null}">
         <div class="row g-0">
+            <!-- Imagem do Produto -->
             <div class="col-md-6">
-                <img th:src="${anuncio.urlImagem}" th:alt="${anuncio.titulo}" class="product-image">
+                <img th:src="${produto.urlImagem}" th:alt="${produto.titulo}" class="product-image"
+                     onerror="this.src='https://via.placeholder.com/500x500?text=Sem+Imagem'">
             </div>
+
+            <!-- Informações do Produto -->
             <div class="col-md-6">
                 <div class="product-info">
-                    <h1 class="product-title" th:text="${anuncio.titulo}">Título do Anúncio</h1>
-                    <p class="product-description" th:text="${anuncio.descricao}">Descrição do produto</p>
+                    <h1 class="product-title" th:text="${produto.titulo}">Título do Produto</h1>
+                    <p class="product-description" th:text="${produto.descricao}">Descrição do produto</p>
+
                     <p class="product-price">
-                        R$ <span th:text="${#numbers.formatDecimal(anuncio.preco, 1, 2)}"></span>
+                        R$ <span th:text="${#numbers.formatDecimal(produto.preco, 1, 2, 'COMMA')}"></span>
                     </p>
+
+                    <!-- Badge de Estoque -->
+                    <div th:if="${produto.estoque > 0}" class="stock-badge stock-available">
+                        <i class="fas fa-check-circle"></i> Em Estoque
+                    </div>
+                    <div th:unless="${produto.estoque > 0}" class="stock-badge stock-unavailable">
+                        <i class="fas fa-times-circle"></i> Fora de Estoque
+                    </div>
+
                     <!-- Especificações -->
                     <div class="spec-table">
                         <h4><i class="fas fa-info-circle"></i> Especificações</h4>
                         <table class="table table-bordered">
                             <tr>
                                 <th><i class="fas fa-tag"></i> Marca</th>
-                                <td th:text="${anuncio.marca}">Marca</td>
+                                <td th:text="${produto.marca}">Marca</td>
                             </tr>
                             <tr>
-                                <th>Modelo</th>
-                                <td th:text="${anuncio.modelo}">Modelo</td>
+                                <th><i class="fas fa-cube"></i> Modelo</th>
+                                <td th:text="${produto.modelo}">Modelo</td>
                             </tr>
                             <tr>
-                                <th>Tamanho</th>
-                                <td th:text="${anuncio.tamanho}">Tamanho</td>
+                                <th><i class="fas fa-ruler"></i> Tamanho</th>
+                                <td th:text="${produto.tamanho}">Tamanho</td>
                             </tr>
                             <tr>
-                                <th>Cor</th>
-                                <td th:text="${anuncio.cor}">Cor</td>
+                                <th><i class="fas fa-palette"></i> Cor</th>
+                                <td th:text="${produto.cor}">Cor</td>
                             </tr>
                             <tr>
-                                <th>Estoque</th>
-                                <td th:text="${anuncio.estoque}">Estoque</td>
+                                <th><i class="fas fa-shield-alt"></i> Time</th>
+                                <td th:text="${produto.time}">Time</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-calendar"></i> Temporada</th>
+                                <td th:text="${produto.temporada}">Temporada</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-box"></i> Estoque</th>
+                                <td th:text="${produto.estoque}">Estoque</td>
                             </tr>
                         </table>
                     </div>
-                    <!-- Botões de ação só para admin -->
-                    <div class="d-flex gap-2" th:if="${session.usuario != null && session.usuario.role == 'ADMIN'}">
-                        <a th:href="@{/admin/anuncios/{id}/editar(id=${anuncio.id})}" class="btn btn-warning btn-custom flex-fill">
-                            <i class="fas fa-edit"></i> Editar Anúncio
+
+                    <!-- Botões de Ação -->
+                    <div class="d-flex gap-2 flex-wrap">
+                        <!-- Botão Adicionar ao Carrinho (para todos) -->
+                        <form th:action="@{/carrinho/adicionar/{id}(id=${produto.id})}" method="POST" class="flex-fill">
+                            <div class="d-flex gap-2">
+                                <input type="number" name="quantidade" class="quantity-input" value="1" min="1"
+                                       th:max="${produto.estoque}" th:disabled="${produto.estoque <= 0}">
+                                <button type="submit" class="btn btn-success-custom flex-fill"
+                                        th:disabled="${produto.estoque <= 0}">
+                                    <i class="fas fa-shopping-cart"></i> Adicionar ao Carrinho
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Botões de Admin -->
+                    <div class="d-flex gap-2 mt-3" th:if="${session.usuario != null && session.usuario.role == 'ADMIN'}">
+                        <a th:href="@{/produtos/admin/{id}/editar(id=${produto.id})}" class="btn btn-warning btn-custom flex-fill">
+                            <i class="fas fa-edit"></i> Editar Produto
                         </a>
-                        <a th:href="@{/admin/anuncios/{id}/deletar(id=${anuncio.id})}" class="btn btn-danger btn-custom flex-fill"
-                           onclick="return confirm('Tem certeza que deseja excluir este anúncio?');">
-                            <i class="fas fa-trash"></i> Excluir
-                        </a>
+                        <form th:action="@{/produtos/admin/{id}/deletar(id=${produto.id})}" method="POST" class="flex-fill">
+                            <button type="submit" class="btn btn-danger btn-custom w-100"
+                                    onclick="return confirm('Tem certeza que deseja excluir este produto?');">
+                                <i class="fas fa-trash"></i> Excluir
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -256,25 +325,38 @@
     <!-- Avaliações -->
     <div class="reviews-section">
         <h3><i class="fas fa-star"></i> Avaliações de Clientes</h3>
-        <div th:each="avaliacao : ${avaliacoes}">
-            <div class="review">
+        <div th:if="${avaliacoes != null && avaliacoes.size() > 0}">
+            <div th:each="avaliacao : ${avaliacoes}" class="review">
                 <div class="review-header">
-                    <strong><i class="fas fa-user"></i> <span th:text="${avaliacao.autor}"></span></strong>
-                    <span class="stars" th:text="'★'.repeat(${avaliacao.estrelas})"></span>
+                    <div>
+                        <strong><i class="fas fa-user"></i> <span th:text="${avaliacao.autor}"></span></strong>
+                        <span class="ms-2 text-muted" th:text="${#dates.format(avaliacao.dataCriacao, 'dd/MM/yyyy')}"></span>
+                    </div>
+                    <span class="stars">
+                        <i th:each="star : ${#numbers.sequence(1, avaliacao.estrelas)}" class="fas fa-star"></i>
+                    </span>
                 </div>
                 <p th:text="${avaliacao.texto}"></p>
+
+                <!-- Botões de Admin para Avaliações -->
                 <div th:if="${session.usuario != null && session.usuario.role == 'ADMIN'}" class="d-flex gap-2">
-                    <a th:href="@{/admin/anuncios/{anuncioId}/avaliacao/{id}/editar(anuncioId=${anuncio.id},id=${avaliacao.id})}"
-                       class="btn btn-warning btn-sm">Editar</a>
-                    <a th:href="@{/admin/anuncios/{anuncioId}/avaliacao/{id}/deletar(anuncioId=${anuncio.id},id=${avaliacao.id})}"
-                       class="btn btn-danger btn-sm"
-                       onclick="return confirm('Excluir avaliação?')">Excluir</a>
+                    <form th:action="@{/produtos/{produtoId}/avaliacao/{id}/deletar(produtoId=${produto.id}, id=${avaliacao.id})}"
+                          method="POST">
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Excluir avaliação?')">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
+        <div th:unless="${avaliacoes != null && avaliacoes.size() > 0}" class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Nenhuma avaliação ainda. Seja o primeiro a avaliar!
+        </div>
     </div>
+</div>
 
-    <!-- Footer -->
+<!-- Footer -->
 <footer class="footer">
     <div class="container">
         <div class="row">
@@ -305,8 +387,6 @@
         </div>
     </div>
 </footer>
-</div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
